@@ -16,14 +16,14 @@ REM  compiling under TPC's defaults.
 REM
 REM  Every output -- the .OBJ, every .TPU, FIXMAIN.EXE/.MAP, GAME.OVR, START.EXE --
 REM  goes to E:\OBJ, never E:\SRC, which holds tracked source and TPC.CFG
-REM  only. gametools/build.sh creates E:\OBJ before calling this file.
+REM  only. build.sh creates E:\OBJ before calling this file.
 REM
-REM  Drive letters, assigned by the caller (gametools/build.sh) because only the
+REM  Drive letters, assigned by the caller (build.sh) because only the
 REM  host knows its own paths:
 REM
-REM      C:  drive_c (the game data)      E:  the version dir (v13)
+REM      C:  drive_c (the game data)      E:  this repository
 REM      D:  TP 5.5 -- TPC.EXE, TURBO.TPL    F:  TASM
-REM      G:  EXEPACK                       H:  this file's directory (v13/build)
+REM      G:  EXEPACK
 REM ==========================================================================
 E:
 CD \SRC
@@ -48,7 +48,7 @@ IF EXIST *.OBJ DEL *.OBJ
 REM --- the hand-written assembly units -------------------------------------
 REM  SSI's own, reached from Pascal through {$L}. Each one assembles to the
 REM  .OBJ the unit of the same name links in. Named outright, one line each:
-REM  gametools/build.sh refuses if this list and v13/src/*.asm disagree.
+REM  Keep this list in step with src/*.asm.
 F:\TASM BLIT,E:\OBJ\BLIT          > E:\BUILD\LOGS\TASM.OUT
 F:\TASM JOYSTICK,E:\OBJ\JOYSTICK >> E:\BUILD\LOGS\TASM.OUT
 F:\TASM SOUNDDRV,E:\OBJ\SOUNDDRV       >> E:\BUILD\LOGS\TASM.OUT
