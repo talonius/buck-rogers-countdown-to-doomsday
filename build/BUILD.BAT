@@ -1,6 +1,6 @@
 @ECHO OFF
 REM ==========================================================================
-REM  Buck Rogers: Countdown to Doomsday v1.0 -- THE BUILD.
+REM  Buck Rogers: Countdown to Doomsday v1.3 -- THE BUILD.
 REM
 REM  This file runs under DOS, calls Borland's TASM and TPC and Microsoft's
 REM  EXEPACK, and emits the two files SSI shipped under their shipped names:
@@ -21,9 +21,9 @@ REM
 REM  Drive letters, assigned by the caller (gametools/build.sh) because only the
 REM  host knows its own paths:
 REM
-REM      C:  drive_c (the game data)      E:  the version dir (v10)
+REM      C:  drive_c (the game data)      E:  the version dir (v13)
 REM      D:  TP 5.5 -- TPC.EXE, TURBO.TPL    F:  TASM
-REM      G:  EXEPACK                       H:  this file's directory (v10/build)
+REM      G:  EXEPACK                       H:  this file's directory (v13/build)
 REM ==========================================================================
 E:
 CD \SRC
@@ -48,7 +48,7 @@ IF EXIST *.OBJ DEL *.OBJ
 REM --- the hand-written assembly units -------------------------------------
 REM  SSI's own, reached from Pascal through {$L}. Each one assembles to the
 REM  .OBJ the unit of the same name links in. Named outright, one line each:
-REM  gametools/build.sh refuses if this list and v10/src/*.asm disagree.
+REM  gametools/build.sh refuses if this list and v13/src/*.asm disagree.
 F:\TASM BLIT,E:\OBJ\BLIT          > E:\BUILD\LOGS\TASM.OUT
 F:\TASM JOYSTICK,E:\OBJ\JOYSTICK >> E:\BUILD\LOGS\TASM.OUT
 F:\TASM SOUNDDRV,E:\OBJ\SOUNDDRV       >> E:\BUILD\LOGS\TASM.OUT

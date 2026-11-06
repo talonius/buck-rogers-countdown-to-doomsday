@@ -21,7 +21,7 @@ uses
   HeapErr;
 
 const
-  TITLE_QUERY = 'Buck Rogers v1.00 ';
+  TITLE_QUERY = 'Buck Rogers v1.3 ';
   TITLE_MENU = 'Play Demo';
   { the title menu's demo choice, and its answer on a timeout }
   DEMO_KEY = 'D';

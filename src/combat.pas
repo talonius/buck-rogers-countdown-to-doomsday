@@ -56,8 +56,9 @@ procedure TurnOnAuto(cr: Types.PCharacter);
 { Fills the combat order with the party list by initiative, highest first, a tie going to the higher tiebreak value. }
 procedure OrderCreatures;
 
-{ Frees the cloud list, the arena and the combat pictures, returns combat statuses to okay, clears C_Side.TEAM's tactics
-  flag and restores the non-combat palette and view size. }
+{ Frees the cloud list, the arena and the combat pictures, returns combat statuses to okay, removes C_Effect.BLIND,
+  C_Effect.HELPLESS and C_Effect.STUNNED from every combatant, clears C_Side.TEAM's tactics flag and restores the
+  non-combat palette and view size. }
 procedure CombatDoneCleanup;
 
 { Tests whether cr may fight with its readied weapon.
@@ -92,6 +93,9 @@ begin
   cr := GDVars.partyHead;
   while cr <> nil do begin
     if cr^.status in [Types.StDodging..Types.StUsingJetpack] then cr^.status := Types.StOkay;
+    FxEngine.RemoveEffect(cr, C_Effect.BLIND, nil);
+    FxEngine.RemoveEffect(cr, C_Effect.HELPLESS, nil);
+    FxEngine.RemoveEffect(cr, C_Effect.STUNNED, nil);
     cr := cr^.next
   end;
   FreeMem(GDVars.combatArena, SizeOf(Types.TArena));

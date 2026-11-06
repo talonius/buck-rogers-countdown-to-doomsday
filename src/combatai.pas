@@ -43,9 +43,7 @@ function CheckMorale(cr: Types.PCharacter): Boolean;
 
 { Readies cr's best weapon against its target, by damage, bonuses and what the line to the target crosses; the armor
   with the highest class byte and plus; and, with a C_WClass.GRENADE weapon, a C_Equip.GRENADE_LAUNCHER item when none
-  is readied. Note: the weapon swap writes the old and the new weapon's flags without testing for nil, so with no weapon
-  readied before, or none better than unarmed, it writes through a nil pointer, and the launcher test then reads through
-  it.
+  is readied. Note: with no weapon better than unarmed, the launcher test reads through a nil weapon pointer.
   @param(cr The combatant.)
   @param(mode 0 leaves area weapons out; otherwise they are scored by where they would land.)
   @param(result True when the weapon readied is heavy, which ends the turn.) }
@@ -119,8 +117,8 @@ begin
 end;
 
 { Scores every cell an area weapon cr has readied could hit, each member in the blast counting by side, and aims at the
-  best cell a line reaches: fires there when mode is non-zero, or with no cell worth it readies a weapon with
-  EquipWeaponAndArmor's mode 0; with mode 0 reports the score.
+  best cell on the arena a line reaches: fires there when mode is non-zero, or with no cell worth it readies a weapon
+  with EquipWeaponAndArmor's mode 0; with mode 0 reports the score.
   @param(cr The combatant with the area weapon.)
   @param(mode Non-zero fires; 0 only scores.)
   @param(choice With mode 0, the best cell's score scaled to a byte.)
@@ -268,7 +266,9 @@ begin
         pY := crY;
         distance := ViewChar.ReadiedWeaponRange(cr);
         GDVars.stopsAtChaff := True;
-        if Pathing.WalkLine(Byte(originX + j), Byte(originY + i), pX, pY, distance) and not GDVars.sawChaff then begin
+        { the cell must lie on the 50 x 25 arena }
+        if (originX + j >= 0) and (originX + j <= 49) and (originY + i >= 0) and (originY + i <= 24) and
+            Pathing.WalkLine(Byte(originX + j), Byte(originY + i), pX, pY, distance) and not GDVars.sawChaff then begin
           bestX := j;
           bestY := i;
           bestWeight := teamWeight
@@ -745,9 +745,9 @@ begin
   if (bestWeapon <> oldWeapon) or (bestWeapon <> cr^.readiedItems[C_Equip.WEAPON]) then
     if (bestWeapon <> nil) and (GDVars.itemTypes[bestWeapon^.template.itemType].isHeavy <> 0) then
       result := True;
-  oldWeapon^.template.flags := oldWeapon^.template.flags and not C_Item.READIED;
+  if oldWeapon <> nil then oldWeapon^.template.flags := oldWeapon^.template.flags and not C_Item.READIED;
   cr^.readiedItems[C_Equip.WEAPON] := bestWeapon;
-  bestWeapon^.template.flags := bestWeapon^.template.flags or C_Item.READIED;
+  if bestWeapon <> nil then bestWeapon^.template.flags := bestWeapon^.template.flags or C_Item.READIED;
   if not result and (launcher <> nil) and not isLauncherReadied and
       (GDVars.itemTypes[bestWeapon^.template.itemType].weaponClass = C_WClass.GRENADE) then
     ViewChar.ToggleReadyItem(launcher, result);

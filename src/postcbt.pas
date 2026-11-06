@@ -59,8 +59,8 @@ procedure LootTakeItemMenu;
 procedure LootTakeMenu(var hasCredits, hasOther: Boolean);
 
 { Shares shipCombatExperience among the enabled members and discards the treasure; repairs the party ship's systems but
-  fuel, and its weapons, with the crew's repair skills; when experience was shared, plunders fuel from the enemy's ship;
-  empties the enemy's fuel, and reports it all. }
+  fuel, and its weapons, with the crew's repair skills; when experience was shared and there is an enemy ship, plunders
+  fuel from it; empties the enemy's fuel, if there is an enemy ship, and reports it all. }
 procedure RepairShip;
 
 { Treats poisoning, then wounds, and reports the results; runs only while treatment is pending, and clears the pending
@@ -492,7 +492,7 @@ begin
     end
     end
   end;
-  if GDVars.experienceShare <> 0 then begin
+  if (GDVars.experienceShare <> 0) and (GDVars.enemyShip <> nil) then begin
     fuel := ((CharHlp.RollDice(2, 4) + 7) * GDVars.enemyShip^.systemStatus[C_Sys.FUEL]) shr 4;
     if fuel > 0 then Inc(fuel, CharHlp.RollDice(1, 16));
     if fuel > GDVars.partyShip^.systemMaximum[C_Sys.FUEL] - GDVars.partyShip^.systemStatus[C_Sys.FUEL] then
@@ -504,7 +504,7 @@ begin
       Inc(GDVars.partyShip^.systemStatus[C_Sys.FUEL], fuel)
     end
   end;
-  GDVars.enemyShip^.systemStatus[C_Sys.FUEL] := 0;
+  if GDVars.enemyShip <> nil then GDVars.enemyShip^.systemStatus[C_Sys.FUEL] := 0;
   TextRend.DisplayWindowText(Black, '');
   TextRend.DisplayWindowText(LightMagenta, '  All repairs completed.');
   TextRend.PauseContinue
